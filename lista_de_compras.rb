@@ -1,3 +1,5 @@
+require 'csv'
+
 class ListaDeCompras
   attr_accessor :produtos
   private :produtos=
@@ -7,10 +9,14 @@ class ListaDeCompras
   end
 
   def mostrar_lista
+    if self.produtos.empty?
+      puts "A sua lista ainda está vazia."
+    else
     puts "Lista de Compras:"
       self.produtos.each_with_index do |produto, index|
         puts "#{index + 1}. #{produto}"
       end
+    end
   end
 
   def incluir_produto(produto)
@@ -27,6 +33,21 @@ class ListaDeCompras
     else
       puts
       puts "Índice inválido. Produto não encontrado."
+    end
+  end
+
+  def salvar_em_csv(arquivo)
+    CSV.open(arquivo, "w") do |csv|
+      self.produtos.each do |produto|
+        csv << [produto]
+      end
+    end
+  end
+
+  def carregar_de_csv(arquivo)
+    self.produtos = []
+    CSV.foreach(arquivo) do |row|
+      self.produtos << row[0]
     end
   end
 end
